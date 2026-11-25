@@ -1,0 +1,16 @@
+Make the game runner executable at build time so client-voodoo can start it
+from Flatpak's read-only application directory.
+
+--- a/data-376715-1621827/node_modules/client-voodoo/build/controller.js
++++ b/data-376715-1621827/node_modules/client-voodoo/build/controller.js
+@@ -342,9 +342,7 @@
+                 env: process.env,
+                 stdio: joltronLogs ? ['ignore', joltronOut.fd, joltronErr.fd] : 'ignore',
+             };
+-            let runnerExecutable = getExecutable();
+-            // Ensure that the runner is executable.
+-            await fs_1.default.chmod(runnerExecutable, '0755');
++            const runnerExecutable = getExecutable();
+             const portArg = args.indexOf('--port');
+             if (portArg === -1) {
+                 throw new Error(`Can't launch a new instance without specifying a port number`);

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Game Jolt
+Comment=Discover, install, and play indie games
+Exec=game-jolt-client
+Icon=com.gamejolt.GameJolt
+Terminal=false
+Categories=Game;
+Keywords=Indie;Games;Library;
+StartupWMClass=com.gamejolt.GameJolt

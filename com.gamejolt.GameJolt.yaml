@@ -10,56 +10,33 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
   - --share=network
+  # The game installer and launched games write to libraries in home or on mounted drives.
   - --filesystem=host
+  # Theme detection.
   - --filesystem=xdg-config/gtk-3.0:ro
   - --filesystem=xdg-config/gtk-4.0:ro
 
 modules:
+  # Game Jolt only serves the client through expiring download links, so the
+  # launcher downloads it on first run. The client's loader then updates it.
   - name: game-jolt-client
-    only-arches:
-      - x86_64
     buildsystem: simple
-    build-options:
-      no-debuginfo: true
     build-commands:
-      # Flatpak provides client updates. The separate game runner handles game updates.
-      - |
-        set -eu
-        assets=data-376715-1621827/package/assets
-        updater_bundles=$(grep -lF 'async checkForClientUpdates(){try{' "$assets"/*.js)
-        printf '%s\n' "$updater_bundles" |
-          xargs sed -i \
-            -e 's/,this.checkForClientUpdates(),setInterval(()=>this.checkForClientUpdates(),45\*60\*1e3)//g' \
-            -e 's/async checkForClientUpdates(){try{/async checkForClientUpdates(){return;try{/g' \
-            -e 's/async updateClient(){try{/async updateClient(){return;try{/g'
-      # Flatpak exports the desktop launcher.
-      - >-
-        sed -i 's/static get supportsShortcuts(){return M()==="linux"}/static get supportsShortcuts(){return false}/'
-        data-376715-1621827/package/assets/bootstrap-client-20f8762e.js
-      - install -d "$FLATPAK_DEST/lib/game-jolt-client"
-      - cp -a data-376715-1621827/. "$FLATPAK_DEST/lib/game-jolt-client/"
-      - find "$FLATPAK_DEST/lib/game-jolt-client" -name yarn-error.log -delete
-      - chmod 0755 "$FLATPAK_DEST/lib/game-jolt-client/node_modules/client-voodoo/bin/GameJoltRunner"
-      - rm "$FLATPAK_DEST/lib/game-jolt-client/node_modules/client-voodoo/bin/GameJoltRunner.exe"
       - install -Dm755 game-jolt-client.sh "$FLATPAK_DEST/bin/game-jolt-client"
       - install -Dm644 "$FLATPAK_ID.desktop" -t "$FLATPAK_DEST/share/applications/"
       - install -Dm644 "$FLATPAK_ID.metainfo.xml" -t "$FLATPAK_DEST/share/metainfo/"
-      - install -Dm644 data-376715-1621827/package/client-icon-256x256.png "$FLATPAK_DEST/share/icons/hicolor/256x256/apps/$FLATPAK_ID.png"
-      - install -Dm644 LICENSE data-376715-1621827/credits.html -t "$FLATPAK_DEST/share/licenses/$FLATPAK_ID/"
+      - install -Dm644 icon_512x512.png "$FLATPAK_DEST/share/icons/hicolor/512x512/apps/$FLATPAK_ID.png"
+      - install -Dm644 LICENSE -t "$FLATPAK_DEST/share/licenses/$FLATPAK_ID/"
     sources:
-      # The upstream download API returns a short-lived signed CDN URL.
-      - type: archive
-        path: gamejoltclient.tar.gz
-        sha256: 43c34c7f26b2c6d69236415349d135539624b4cadf230bf46a0a62b16527e564
-        strip-components: 0
-      - type: patch
-        path: game-runner-readonly.patch
-      - type: file
-        url: https://raw.githubusercontent.com/gamejolt/gamejolt/580427ccba32c0a28ddc8aceb6076502bb5cc961/LICENSE
-        sha256: 809c62af2612c8a6a7fababc7375e5336c0263b48cae1b9df7d8cb9990cf5e91
       - type: file
         path: game-jolt-client.sh
       - type: file
         path: com.gamejolt.GameJolt.desktop
       - type: file
         path: com.gamejolt.GameJolt.metainfo.xml
+      - type: file
+        url: https://raw.githubusercontent.com/gamejolt/gamejolt/db91c7a4430f9e6bcccb405cddf8a415fb006e10/scripts/build/desktop-app/icons/mac.iconset/icon_512x512.png
+        sha256: d99698a8a018457c066fb04eeadc3d39a2d8347d691e749e111a60d21c2a3c79
+      - type: file
+        url: https://raw.githubusercontent.com/gamejolt/gamejolt/db91c7a4430f9e6bcccb405cddf8a415fb006e10/LICENSE
+        sha256: 809c62af2612c8a6a7fababc7375e5336c0263b48cae1b9df7d8cb9990cf5e91

@@ -17,6 +17,10 @@
       Follow developers and communities to see posts, share your creations, and
       talk with other players.
     </p>
+    <p>
+      This package downloads the official Game Jolt client on first launch.
+      The client then keeps itself up to date.
+    </p>
   </description>
   <launchable type="desktop-id">com.gamejolt.GameJolt.desktop</launchable>
   <url type="homepage">https://gamejolt.com/app</url>
@@ -24,7 +28,11 @@
   <url type="bugtracker">https://github.com/gamejolt/gamejolt/issues</url>
   <url type="vcs-browser">https://github.com/gamejolt/gamejolt</url>
   <releases>
-    <release version="1.39.4" date="2024-08-14"/>
+    <release version="1.0.0" date="2026-11-25">
+      <description>
+        <p>Download the official client on first launch and let it update itself.</p>
+      </description>
+    </release>
   </releases>
   <content_rating type="oars-1.1">
     <content_attribute id="social-chat">intense</content_attribute>

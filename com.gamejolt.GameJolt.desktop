@@ -7,4 +7,4 @@ Icon=com.gamejolt.GameJolt
 Terminal=false
 Categories=Game;
 Keywords=Indie;Games;Library;
-StartupWMClass=com.gamejolt.GameJolt
+StartupWMClass=game-jolt-client
